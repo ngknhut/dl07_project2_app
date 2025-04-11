@@ -14,6 +14,9 @@ import re
 from underthesea import word_tokenize
 from gensim import corpora, models, similarities
 import pickle
+import requests
+import re
+from io import StringIO
 
 # Thiết lập cấu hình trang
 st.set_page_config(
@@ -52,6 +55,35 @@ def load_content_gem(path='content_gem.pkl'):
 def load_baseline_model(path='baseline_model.pkl'):
     with open(path, 'rb') as f:
         return pickle.load(f)
+
+@st.cache_data
+def load_large_csv_from_gdrive(file_id):
+    """
+    Tải file CSV lớn từ Google Drive
+    """
+    # URL ban đầu 
+    url = f"https://drive.google.com/uc?export=download&id={file_id}"
+    
+    # Lấy session cookies
+    session = requests.Session()
+    response = session.get(url, stream=True)
+    
+    # Kiểm tra xem có cần xác nhận không
+    if "confirm" in response.text:
+        confirm_match = re.search(r'confirm=([0-9A-Za-z]+)', response.text)
+        if confirm_match:
+            confirm_token = confirm_match.group(1)
+            url = f"{url}&confirm={confirm_token}"
+            response = session.get(url, stream=True)
+    
+    # Đọc nội dung
+    content = response.content.decode('utf-8')
+    
+    # Chuyển đổi sang DataFrame
+    df = pd.read_csv(StringIO(content))
+    
+    return df
+
 
 @st.cache_data
 def load_data():
