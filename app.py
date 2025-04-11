@@ -300,7 +300,7 @@ def display_product_cards(products, score_col=None):
                 card_html = f"""
                 <div class="product-card">
                     <div class="product-image">
-                        <img src="{product['image'] if not pd.isna(product['image']) and product['image'] is not None else 'img/no_image.png'}" alt="{product['product_name']}">
+                        <img src="{product['image'] if not pd.isna(product['image']) and product['image'] is not None else 'no_image.png'}" alt="{product['product_name']}">
                     </div>
                     <div class="product-title">{product['product_name']}</div>
                     <div class="product-category">Danh mục: {product['sub_category']}</div>
