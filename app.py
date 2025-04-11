@@ -57,7 +57,7 @@ def load_baseline_model(path='baseline_model.pkl'):
         return pickle.load(f)
 
 @st.cache_data
-def load_large_csv_from_gdrive(file_id):
+def load_large_csv_from_gdrive():
     """
     Tải file CSV lớn từ Google Drive
     """
@@ -84,6 +84,40 @@ def load_large_csv_from_gdrive(file_id):
     
     return df
 
+@st.cache_resource
+def load_pkl_from_gdrive(file_id):
+    """
+    Tải file pickle từ Google Drive và khôi phục đối tượng Python
+    
+    Tham số:
+        file_id (str): ID của file trên Google Drive
+    
+    Trả về:
+        object: Đối tượng Python được khôi phục từ file pickle
+    """
+    # URL dạng chia sẻ công khai của Google Drive
+    url = f"https://drive.google.com/uc?export=download&id={file_id}"
+    
+    try:
+        # Tải nội dung file
+        response = requests.get(url)
+        response.raise_for_status()  # Kiểm tra lỗi HTTP
+        
+        # Sử dụng BytesIO để đọc dữ liệu nhị phân
+        data_bytes = BytesIO(response.content)
+        
+        # Khôi phục đối tượng từ file pickle
+        obj = pickle.load(data_bytes)
+        
+        return obj
+    
+    except requests.exceptions.RequestException as e:
+        st.error(f"Lỗi khi tải file: {str(e)}")
+        return None
+    except pickle.UnpicklingError as e:
+        st.error(f"Lỗi khi giải nén file pickle: {str(e)}")
+        return None
+        
 
 @st.cache_data
 def load_data():
@@ -124,7 +158,7 @@ tfidf_corpus = tfidf[corpus]
 index = load_similarity_index(tfidf_corpus, feature_cnt)
 products_df = load_data()
 baseline_model = load_baseline_model()
-user_df = load_data_user()
+user_df = load_large_csv_from_gdrive("1O-iWYMeHA2Epk5L3zg4UHYMJyqrjiI-pOkgIxnrj9dQ")
 
 # 1. Sử dụng st.cache_data.clear() để xóa cache từ dữ liệu đã lưu trong đêcorator @st.cache_data
 import streamlit as st
