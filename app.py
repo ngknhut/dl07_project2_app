@@ -445,7 +445,7 @@ if page == "Tổng quan":
     # Thông tin tổng quan về dự án
     st.header("Giới thiệu về dự án")
     st.markdown("""
-    <ul style='font-size: 20px;'>
+    <ul style='font-size: 18px;'>
         <li>Phát triển hệ thống gợi ý sản phẩm theo hai phương pháp Content-based Filtering và Collaborative Filtering</li>
         <li>Thiết kế đặc biệt cho nền tảng Shopee với đặc thù đa dạng về sản phẩm và người dùng</li>
         <li>Mục tiêu nâng cao trải nghiệm mua sắm cá nhân hóa và tối ưu hóa tỷ lệ chuyển đổi</li>
@@ -457,7 +457,7 @@ if page == "Tổng quan":
     # Thông tin về kết quả đạt được
     st.header("Kết quả đạt được")
     st.markdown("""
-    <ul style='font-size: 20px;'>
+    <ul style='font-size: 18px;'>
         <li>Cải thiện tỷ lệ chuyển đổi từ các sản phẩm được gợi ý</li>
         <li>Giảm tỷ lệ bỏ giỏ hàng nhờ gợi ý sản phẩm phù hợp</li>
         <li>Nâng cao độ chính xác trong việc dự đoán sở thích người dùng</li>
@@ -469,7 +469,7 @@ if page == "Tổng quan":
     # Lợi ích cho người dùng
     st.header("Lợi ích cho người dùng")
     st.markdown("""
-    <ul style='font-size: 20px;'>
+    <ul style='font-size: 18px;'>
     <li>Trải nghiệm mua sắm được cá nhân hóa dựa trên sở thích và hành vi</li>
     <li>Khám phá sản phẩm mới phù hợp mà có thể không tìm thấy qua tìm kiếm thông thường</li>
     <li>Tiết kiệm thời gian duyệt sản phẩm nhờ các gợi ý chính xác</li>
