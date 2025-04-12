@@ -1,11 +1,13 @@
-streamlit
-numpy
-pandas
+streamlit==1.44.1
+numpy==1.26.4
+pandas==2.2.3
 matplotlib
 seaborn
 scikit-learn==1.6.1
+scikit-surprise==1.1.4
 joblib
 scipy
 plotly
 h5py
-underthesea
+underthesea==6.8.4
+underthesea_core==1.0.4
