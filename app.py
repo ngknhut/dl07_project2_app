@@ -17,6 +17,7 @@ import pickle
 import requests
 import re
 from io import StringIO
+import datetime
 
 # Thiết lập cấu hình trang
 st.set_page_config(
@@ -57,69 +58,6 @@ def load_baseline_model(path='baseline_model.pkl'):
         return pickle.load(f)
 
 @st.cache_data
-def load_large_csv_from_gdrive():
-    """
-    Tải file CSV lớn từ Google Drive
-    """
-    # URL ban đầu 
-    url = f"https://drive.google.com/uc?export=download&id={file_id}"
-    
-    # Lấy session cookies
-    session = requests.Session()
-    response = session.get(url, stream=True)
-    
-    # Kiểm tra xem có cần xác nhận không
-    if "confirm" in response.text:
-        confirm_match = re.search(r'confirm=([0-9A-Za-z]+)', response.text)
-        if confirm_match:
-            confirm_token = confirm_match.group(1)
-            url = f"{url}&confirm={confirm_token}"
-            response = session.get(url, stream=True)
-    
-    # Đọc nội dung
-    content = response.content.decode('utf-8')
-    
-    # Chuyển đổi sang DataFrame
-    df = pd.read_csv(StringIO(content))
-    
-    return df
-
-@st.cache_resource
-def load_pkl_from_gdrive(file_id):
-    """
-    Tải file pickle từ Google Drive và khôi phục đối tượng Python
-    
-    Tham số:
-        file_id (str): ID của file trên Google Drive
-    
-    Trả về:
-        object: Đối tượng Python được khôi phục từ file pickle
-    """
-    # URL dạng chia sẻ công khai của Google Drive
-    url = f"https://drive.google.com/uc?export=download&id={file_id}"
-    
-    try:
-        # Tải nội dung file
-        response = requests.get(url)
-        response.raise_for_status()  # Kiểm tra lỗi HTTP
-        
-        # Sử dụng BytesIO để đọc dữ liệu nhị phân
-        data_bytes = BytesIO(response.content)
-        
-        # Khôi phục đối tượng từ file pickle
-        obj = pickle.load(data_bytes)
-        
-        return obj
-    
-    except requests.exceptions.RequestException as e:
-        st.error(f"Lỗi khi tải file: {str(e)}")
-        return None
-    except pickle.UnpicklingError as e:
-        st.error(f"Lỗi khi giải nén file pickle: {str(e)}")
-        return None
-        
-
-@st.cache_data
 def load_data():
     """
     Load và cache dữ liệu sản phẩm từ file CSV
@@ -158,7 +96,7 @@ tfidf_corpus = tfidf[corpus]
 index = load_similarity_index(tfidf_corpus, feature_cnt)
 products_df = load_data()
 baseline_model = load_baseline_model()
-user_df = load_large_csv_from_gdrive("1O-iWYMeHA2Epk5L3zg4UHYMJyqrjiI-pOkgIxnrj9dQ")
+user_df = load_data_user()
 
 # 1. Sử dụng st.cache_data.clear() để xóa cache từ dữ liệu đã lưu trong đêcorator @st.cache_data
 import streamlit as st
@@ -446,62 +384,101 @@ def on_select_change():
     st.session_state['similar_products_from_selectbox'] = products_df.iloc[familier_lst]
 
 
+st.image('wall.jpg')
 
 # Sidebar
 st.sidebar.title("Hệ thống Đề xuất Sản phẩm")
 st.sidebar.image("shopee_pic_1.jpg", width=250)
 st.sidebar.markdown("---")
 
+
+
+
 # Chọn trang trong sidebar
 page = st.sidebar.selectbox(
     "Chọn chức năng:",
-    ["Tổng quan","Kết quả huấn luyện", "Tìm sản phẩm tương tự", "Đề xuất cá nhân hóa"]
+    ["Tổng quan", "Kết quả huấn luyện", "Tìm sản phẩm tương tự", "Đề xuất cá nhân hóa"]
 )
+
+# Separator
+st.sidebar.markdown('<div class="separator"></div>', unsafe_allow_html=True)   
+
+st.sidebar.markdown("👨‍🏫 **Giảng viên:** Cô Khuất Thúy Phương")
+# Separator
+st.sidebar.markdown('<div class="separator"></div>', unsafe_allow_html=True)   
+
+
+# Footer info
+st.sidebar.markdown("🏆 **Thực hiện bởi:**")
+
+st.sidebar.markdown("""
+<div style="padding: 10px; border-radius: 8px; margin: 5px 0;">
+    <p style="color: white; margin: 0;">Cao Thị Ngọc Minh & Nguyễn Kế Nhựt</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown("""
+<style>
+    .separator {
+        margin: 15px 0;
+        height: 1px;
+        background-color: #444;
+        width: 100%;
+    }
+</style>
+<div class="separator"></div>
+""", unsafe_allow_html=True)
+
+today = datetime.date.today().strftime("%d/%m/%Y")
+st.sidebar.markdown(f"📅 **Ngày báo cáo:** {today}")
 
 # Tải dữ liệu mẫu
 sample_products = get_sample_products(50)
 sample_customers = get_sample_customers()
 content_based_results = get_content_based_results()
 results_df = pd.read_csv('cf_algorithms_results.csv')
-if page == "Tổng quan":  
+
+# Trang mới: Tổng quan
+if page == "Tổng quan":
     st.title("Hệ thống Đề xuất Sản phẩm Shopee")
     
-    # Header image
-    st.image("shopee_pic_1.jpg", width=700)
-  
     # Thông tin tổng quan về dự án
     st.header("Giới thiệu về dự án")
     st.markdown("""
-    - Phát triển hệ thống gợi ý sản phẩm hai lớp kết hợp phương pháp Content-based Filtering và Collaborative Filtering
-    - Thiết kế đặc biệt cho nền tảng Shopee với đặc thù đa dạng về sản phẩm và người dùng
-    - Mục tiêu nâng cao trải nghiệm mua sắm cá nhân hóa và tối ưu hóa tỷ lệ chuyển đổi
-    - Tận dụng dữ liệu hành vi người dùng và thông tin chi tiết về sản phẩm
-    - Áp dụng kỹ thuật machine learning để xử lý dữ liệu và phân tích theo thời gian thực
-    """)
+    <ul style='font-size: 20px;'>
+        <li>Phát triển hệ thống gợi ý sản phẩm theo hai phương pháp Content-based Filtering và Collaborative Filtering</li>
+        <li>Thiết kế đặc biệt cho nền tảng Shopee với đặc thù đa dạng về sản phẩm và người dùng</li>
+        <li>Mục tiêu nâng cao trải nghiệm mua sắm cá nhân hóa và tối ưu hóa tỷ lệ chuyển đổi</li>
+        <li>Tận dụng dữ liệu hành vi người dùng và thông tin chi tiết về sản phẩm</li>
+        <li>Áp dụng kỹ thuật machine learning để xử lý dữ liệu và phân tích theo thời gian thực</li>
+    </ul>
+    """, unsafe_allow_html=True)
     
     # Thông tin về kết quả đạt được
     st.header("Kết quả đạt được")
     st.markdown("""
-    - Tăng đáng kể tỷ lệ tương tác với sản phẩm được gợi ý
-    - Cải thiện tỷ lệ chuyển đổi từ các sản phẩm được gợi ý
-    - Giảm tỷ lệ bỏ giỏ hàng nhờ gợi ý sản phẩm phù hợp
-    - Nâng cao độ chính xác trong việc dự đoán sở thích người dùng
-    - Đảm bảo thời gian phản hồi nhanh cho trải nghiệm mượt mà
-    - Tăng thời gian người dùng ở lại trang web và ứng dụng
-    """)
+    <ul style='font-size: 20px;'>
+        <li>Cải thiện tỷ lệ chuyển đổi từ các sản phẩm được gợi ý</li>
+        <li>Giảm tỷ lệ bỏ giỏ hàng nhờ gợi ý sản phẩm phù hợp</li>
+        <li>Nâng cao độ chính xác trong việc dự đoán sở thích người dùng</li>
+        <li>Đảm bảo thời gian phản hồi nhanh cho trải nghiệm mượt mà</li>
+        <li>Tăng thời gian người dùng ở lại trang web và ứng dụng</li>
+    </ul>
+    """, unsafe_allow_html=True)
     
     # Lợi ích cho người dùng
     st.header("Lợi ích cho người dùng")
     st.markdown("""
-    - Trải nghiệm mua sắm được cá nhân hóa dựa trên sở thích và hành vi
-    - Khám phá sản phẩm mới phù hợp mà có thể không tìm thấy qua tìm kiếm thông thường
-    - Tiết kiệm thời gian duyệt sản phẩm nhờ các gợi ý chính xác
-    - Nhận được gợi ý thay thế khi sản phẩm đang xem không còn hàng
-    - Cập nhật xu hướng mua sắm phù hợp với sở thích cá nhân
-    - Tối ưu chi tiêu với gợi ý sản phẩm phù hợp ngân sách
-    - Khám phá các bộ sản phẩm kết hợp dựa trên mẫu mua sắm của người dùng tương tự
-    """)
-    
+    <ul style='font-size: 20px;'>
+    <li>Trải nghiệm mua sắm được cá nhân hóa dựa trên sở thích và hành vi</li>
+    <li>Khám phá sản phẩm mới phù hợp mà có thể không tìm thấy qua tìm kiếm thông thường</li>
+    <li>Tiết kiệm thời gian duyệt sản phẩm nhờ các gợi ý chính xác</li>
+    <li>Nhận được gợi ý thay thế khi sản phẩm đang xem không còn hàng</li>
+    <li>Cập nhật xu hướng mua sắm phù hợp với sở thích cá nhân</li>
+    <li>Khám phá các bộ sản phẩm kết hợp dựa trên mẫu mua sắm của người dùng tương tự</li>
+    </ul>
+    """,unsafe_allow_html=True)
+
 # Trang 1: Kết quả huấn luyện
 if page == "Kết quả huấn luyện":
     st.title("Kết quả Huấn luyện Mô hình Đề xuất")
@@ -512,6 +489,8 @@ if page == "Kết quả huấn luyện":
     col1.metric("Tổng số sản phẩm", "46,000+", "")
     col2.metric("Tổng số người dùng", "650,000+", "")
     col3.metric("Tổng số đánh giá", "986,000+", "")
+
+    st.image('wordcloud.png')
     
     st.markdown("---")
     
