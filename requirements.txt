@@ -11,3 +11,4 @@ plotly
 h5py
 underthesea==6.8.4
 underthesea_core==1.0.4
+gensim==4.3.3
