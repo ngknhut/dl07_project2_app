@@ -4,6 +4,5 @@ pandas
 matplotlib
 seaborn
 scikit-learn
-pickle
 joblib
 scipy
