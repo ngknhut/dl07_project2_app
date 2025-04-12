@@ -489,6 +489,8 @@ if page == "Kết quả huấn luyện":
     col1.metric("Tổng số sản phẩm", "46,000+", "")
     col2.metric("Tổng số người dùng", "650,000+", "")
     col3.metric("Tổng số đánh giá", "986,000+", "")
+
+    st.image('wordcloud.png')
     
     st.markdown("---")
     
