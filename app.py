@@ -498,7 +498,7 @@ if page == "Kết quả huấn luyện":
     st.subheader("Mô hình Content-based Filtering")
     # Sử dụng Styler.set_properties để highlight chính xác dòng thứ 2 (index 1)
     content_based_styled_df = content_based_results.style.apply(
-    lambda x: ['background-color: lightgreen' if i==0 else '' 
+    lambda x: ['background-color: darkgreen' if i==0 else '' 
               for i in range(len(content_based_results))],axis=0)
 
     st.table(content_based_styled_df)
@@ -506,7 +506,7 @@ if page == "Kết quả huấn luyện":
     # Hiển thị biểu đồ so sánh các mô hình
     st.subheader("Mô hình User-based Filtering")
     user_based_styled_df = results_df.style.apply(
-    lambda x: ['background-color: lightgreen' if i==8 else '' 
+    lambda x: ['background-color: darkgreen' if i==8 else '' 
               for i in range(len(results_df))],axis=0)
 
     st.table(user_based_styled_df)
