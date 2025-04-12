@@ -455,7 +455,7 @@ st.sidebar.markdown("---")
 # Chọn trang trong sidebar
 page = st.sidebar.selectbox(
     "Chọn chức năng:",
-    ["Kết quả huấn luyện", "Tìm sản phẩm tương tự", "Đề xuất cá nhân hóa"]
+    ["Tổng quan","Kết quả huấn luyện", "Tìm sản phẩm tương tự", "Đề xuất cá nhân hóa"]
 )
 
 # Tải dữ liệu mẫu
@@ -463,7 +463,45 @@ sample_products = get_sample_products(50)
 sample_customers = get_sample_customers()
 content_based_results = get_content_based_results()
 results_df = pd.read_csv('cf_algorithms_results.csv')
-
+if page == "Tổng quan":  
+    st.title("Hệ thống Đề xuất Sản phẩm Shopee")
+    
+    # Header image
+    st.image("shopee_pic_1.jpg", width=700)
+  
+    # Thông tin tổng quan về dự án
+    st.header("Giới thiệu về dự án")
+    st.markdown("""
+    - Phát triển hệ thống gợi ý sản phẩm hai lớp kết hợp phương pháp Content-based Filtering và Collaborative Filtering
+    - Thiết kế đặc biệt cho nền tảng Shopee với đặc thù đa dạng về sản phẩm và người dùng
+    - Mục tiêu nâng cao trải nghiệm mua sắm cá nhân hóa và tối ưu hóa tỷ lệ chuyển đổi
+    - Tận dụng dữ liệu hành vi người dùng và thông tin chi tiết về sản phẩm
+    - Áp dụng kỹ thuật machine learning để xử lý dữ liệu và phân tích theo thời gian thực
+    """)
+    
+    # Thông tin về kết quả đạt được
+    st.header("Kết quả đạt được")
+    st.markdown("""
+    - Tăng đáng kể tỷ lệ tương tác với sản phẩm được gợi ý
+    - Cải thiện tỷ lệ chuyển đổi từ các sản phẩm được gợi ý
+    - Giảm tỷ lệ bỏ giỏ hàng nhờ gợi ý sản phẩm phù hợp
+    - Nâng cao độ chính xác trong việc dự đoán sở thích người dùng
+    - Đảm bảo thời gian phản hồi nhanh cho trải nghiệm mượt mà
+    - Tăng thời gian người dùng ở lại trang web và ứng dụng
+    """)
+    
+    # Lợi ích cho người dùng
+    st.header("Lợi ích cho người dùng")
+    st.markdown("""
+    - Trải nghiệm mua sắm được cá nhân hóa dựa trên sở thích và hành vi
+    - Khám phá sản phẩm mới phù hợp mà có thể không tìm thấy qua tìm kiếm thông thường
+    - Tiết kiệm thời gian duyệt sản phẩm nhờ các gợi ý chính xác
+    - Nhận được gợi ý thay thế khi sản phẩm đang xem không còn hàng
+    - Cập nhật xu hướng mua sắm phù hợp với sở thích cá nhân
+    - Tối ưu chi tiêu với gợi ý sản phẩm phù hợp ngân sách
+    - Khám phá các bộ sản phẩm kết hợp dựa trên mẫu mua sắm của người dùng tương tự
+    """)
+    
 # Trang 1: Kết quả huấn luyện
 if page == "Kết quả huấn luyện":
     st.title("Kết quả Huấn luyện Mô hình Đề xuất")
