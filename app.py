@@ -17,6 +17,7 @@ import pickle
 import requests
 import re
 from io import StringIO
+import datetime
 
 # Thiết lập cấu hình trang
 st.set_page_config(
@@ -383,23 +384,100 @@ def on_select_change():
     st.session_state['similar_products_from_selectbox'] = products_df.iloc[familier_lst]
 
 
+st.image('wall.jpg')
 
 # Sidebar
 st.sidebar.title("Hệ thống Đề xuất Sản phẩm")
 st.sidebar.image("shopee_pic_1.jpg", width=250)
 st.sidebar.markdown("---")
 
+
+
+
 # Chọn trang trong sidebar
 page = st.sidebar.selectbox(
     "Chọn chức năng:",
-    ["Kết quả huấn luyện", "Tìm sản phẩm tương tự", "Đề xuất cá nhân hóa"]
+    ["Tổng quan", "Kết quả huấn luyện", "Tìm sản phẩm tương tự", "Đề xuất cá nhân hóa"]
 )
+
+# Separator
+st.sidebar.markdown('<div class="separator"></div>', unsafe_allow_html=True)   
+
+st.sidebar.markdown("👨‍🏫 **Giảng viên:** Cô Khuất Thúy Phương")
+# Separator
+st.sidebar.markdown('<div class="separator"></div>', unsafe_allow_html=True)   
+
+
+# Footer info
+st.sidebar.markdown("🏆 **Thực hiện bởi:**")
+
+st.sidebar.markdown("""
+<div style="padding: 10px; border-radius: 8px; margin: 5px 0;">
+    <p style="color: white; margin: 0;">Cao Thị Ngọc Minh & Nguyễn Kế Nhựt</p>
+</div>
+""", unsafe_allow_html=True)
+
+st.sidebar.markdown("""
+<style>
+    .separator {
+        margin: 15px 0;
+        height: 1px;
+        background-color: #444;
+        width: 100%;
+    }
+</style>
+<div class="separator"></div>
+""", unsafe_allow_html=True)
+
+today = datetime.date.today().strftime("%d/%m/%Y")
+st.sidebar.markdown(f"📅 **Ngày báo cáo:** {today}")
 
 # Tải dữ liệu mẫu
 sample_products = get_sample_products(50)
 sample_customers = get_sample_customers()
 content_based_results = get_content_based_results()
 results_df = pd.read_csv('cf_algorithms_results.csv')
+
+# Trang mới: Tổng quan
+if page == "Tổng quan":
+    st.title("Hệ thống Đề xuất Sản phẩm Shopee")
+    
+    # Thông tin tổng quan về dự án
+    st.header("Giới thiệu về dự án")
+    st.markdown("""
+    <ul style='font-size: 20px;'>
+        <li>Phát triển hệ thống gợi ý sản phẩm theo hai phương pháp Content-based Filtering và Collaborative Filtering</li>
+        <li>Thiết kế đặc biệt cho nền tảng Shopee với đặc thù đa dạng về sản phẩm và người dùng</li>
+        <li>Mục tiêu nâng cao trải nghiệm mua sắm cá nhân hóa và tối ưu hóa tỷ lệ chuyển đổi</li>
+        <li>Tận dụng dữ liệu hành vi người dùng và thông tin chi tiết về sản phẩm</li>
+        <li>Áp dụng kỹ thuật machine learning để xử lý dữ liệu và phân tích theo thời gian thực</li>
+    </ul>
+    """, unsafe_allow_html=True)
+    
+    # Thông tin về kết quả đạt được
+    st.header("Kết quả đạt được")
+    st.markdown("""
+    <ul style='font-size: 20px;'>
+        <li>Cải thiện tỷ lệ chuyển đổi từ các sản phẩm được gợi ý</li>
+        <li>Giảm tỷ lệ bỏ giỏ hàng nhờ gợi ý sản phẩm phù hợp</li>
+        <li>Nâng cao độ chính xác trong việc dự đoán sở thích người dùng</li>
+        <li>Đảm bảo thời gian phản hồi nhanh cho trải nghiệm mượt mà</li>
+        <li>Tăng thời gian người dùng ở lại trang web và ứng dụng</li>
+    </ul>
+    """, unsafe_allow_html=True)
+    
+    # Lợi ích cho người dùng
+    st.header("Lợi ích cho người dùng")
+    st.markdown("""
+    <ul style='font-size: 20px;'>
+    <li>Trải nghiệm mua sắm được cá nhân hóa dựa trên sở thích và hành vi</li>
+    <li>Khám phá sản phẩm mới phù hợp mà có thể không tìm thấy qua tìm kiếm thông thường</li>
+    <li>Tiết kiệm thời gian duyệt sản phẩm nhờ các gợi ý chính xác</li>
+    <li>Nhận được gợi ý thay thế khi sản phẩm đang xem không còn hàng</li>
+    <li>Cập nhật xu hướng mua sắm phù hợp với sở thích cá nhân</li>
+    <li>Khám phá các bộ sản phẩm kết hợp dựa trên mẫu mua sắm của người dùng tương tự</li>
+    </ul>
+    """,unsafe_allow_html=True)
 
 # Trang 1: Kết quả huấn luyện
 if page == "Kết quả huấn luyện":
