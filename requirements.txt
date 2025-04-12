@@ -7,3 +7,4 @@ scikit-learn
 joblib
 scipy
 plotly
+h5py
