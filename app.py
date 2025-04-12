@@ -403,7 +403,7 @@ page = st.sidebar.selectbox(
 # Separator
 st.sidebar.markdown('<div class="separator"></div>', unsafe_allow_html=True)   
 
-st.sidebar.markdown("👨‍🏫 **Giảng viên:** Cô Khuất Thúy Phương")
+st.sidebar.markdown("👨‍🏫 **Giảng viên:** Cô Khuất Thùy Phương")
 # Separator
 st.sidebar.markdown('<div class="separator"></div>', unsafe_allow_html=True)   
 
